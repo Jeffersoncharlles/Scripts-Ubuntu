@@ -22,7 +22,18 @@
 # ------------------------------------------------------------------------#
 # ------------------------------- VARIÁVEIS ------------------------------#
 LOG="/var/log/$(echo $0 | cut -d'/' -f2)"
+KERNEL=$(uname -r)
+HOSTNAME=$(hostname)
+CPUNO=$(cat /proc/cpuinfo |grep "model name" | wc -l) #numero de processador
+CPUMODEL=$(cat /proc/cpuinfo |grep "model name" | head -n1|cut -c14-) #modelo do processador
+MEMTOTAL=$(expr $(cat /proc/meminfo |grep MemTotal|tr -d ' '|cut -d: -f2|tr -d kB) / 1024) # em mb
 
+#CORES
+AMARELO="\033[33;1m"
+CINZACLARRO="\033[37;1m"
+VERDE="\033[32;1m"
+VERMELHO="\033[31;1m"
+ZERARR="\033[0m"
 
 # ------------------------------------------------------------------------#
 echo "####################################################################################"
@@ -60,9 +71,12 @@ y
 
 mysql -uroot
 
-CREATE USER 'user'@'localhost' INDENTIFIED BY 'senhausuario';
-GRANT ALL PRIVILEGES ON *.* TO 'user'@'localhost' WITH GRANT OPTION;
+#CREATE USER 'user'@'localhost' INDENTIFIED BY 'senhausuario';
+#GRANT ALL PRIVILEGES ON *.* TO 'user'@'localhost' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON *.* TO 'superadmin'@'localhost' IDENTIFIED BY 'senhauuariosuper';
 exit
 echo "#########################----------Restart-aplicacao----###################################"
 a2enmod suexec rewrite include
 systemctl restat apache2
+
+#sudo apt install phpmyadmin
